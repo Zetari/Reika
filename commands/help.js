@@ -5,12 +5,11 @@ exports.run = (bot, message, args) => {
 	if (!args[0]) {
 		let props;
 		let groups;
-		fs.readdir('D:/Discord Bots/Reika/commands', (err, files) => {
+		fs.readdir(__dirname, (err, files) => {
 			if(err) console.error(err);
-			console.log(`Loading a total of ${files.length} commands.`);
 			groups = new Array();
 			files.forEach(f=> {
-				props = require(`D:/Discord Bots/Reika/commands/${f}`);
+				props = require(`${__dirname}/${f}`);
 				if (!groups[props.help.group]) {
 					groups[props.help.group] = new Array();
 					groups[props.help.group].push(props.help.name);
@@ -34,7 +33,7 @@ exports.run = (bot, message, args) => {
 				x[c.help.group].push(1);
 			});
 			files.forEach(f => {
-				props = require(`D:/Discord Bots/Reika/commands/${f}`);
+				props = require(`${__dirname}/${f}`);
 				x[props.help.group] = [];
 				groups[props.help.group] = [];
 			});
