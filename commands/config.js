@@ -2,12 +2,14 @@ const db = require('quick.db')
 const Discord = require('discord.js')
 
 exports.run = (bot, message, args, func) => {
+  if (!message.member.hasPermission('ADMINISTRATOR')) return func.statusMsg('x', message.channel, 'This requires you to have a role with the permission `Administrator`.')
   let joinchannel = message.guild.channels.get(db.fetch(`logs_join_${message.guild.id}`))
   let welcomechannel = message.guild.channels.get(db.fetch(`logs_welcome_${message.guild.id}`))
   let leavechannel = message.guild.channels.get(db.fetch(`logs_leavelog_${message.guild.id}`))
   let kickchannel = message.guild.channels.get(db.fetch(`logs_kick_${message.guild.id}`))
   let banchannel = message.guild.channels.get(db.fetch(`logs_ban_${message.guild.id}`))
   let leavechanneltxt = message.guild.channels.get(db.fetch(`logs_leave_${message.guild.id}`))
+  let warnchannel = message.guild.channels.get(db.fetch(`logs_warn_${message.guild.id}`))
   let dmText = db.fetch(`messages_joindm_${message.guild.id}`)
   let joinText = db.fetch(`messages_join_${message.guild.id}`)
   let leaveText = db.fetch(`messages_leave_${message.guild.id}`)
@@ -21,6 +23,7 @@ exports.run = (bot, message, args, func) => {
   let leavemsgtxt
   let welcometxt
   let leavechtxt
+  let warntxt
 
   if (!banchannel) bantxt = '*Not Set*'
   else bantxt = banchannel
@@ -49,17 +52,21 @@ exports.run = (bot, message, args, func) => {
   if (!leaveText) leavemsgtxt = '*Not set*'
   else leavemsgtxt = leaveText
 
+  if (!warnchannel) warntxt = '*Not set*'
+  else warntxt = warnchannel
+
   if (args[0] === 'messages') {
     embed.setTitle('Server Config • Messages')
-      .addField('Join DM Message', dmtxt, true)
-      .addField('Welcome Message', joinmsgtxt, true)
-      .addField('Leave Message', leavemsgtxt, true)
+      .addField('Join DM Message', dmtxt)
+      .addField('Welcome Message', joinmsgtxt)
+      .addField('Leave Message', leavemsgtxt)
     message.channel.send({ embed })
   }
   if (args[0] === 'logs') {
     embed.setTitle('Server Config • Logs')
       .addField('Ban Log', bantxt, true)
       .addField('Kick Log', kicktxt, true)
+      .addField('Warn Log', warntxt, true)
       .addField('Join Log', jointxt, true)
       .addField('Leave Log', leavetxt, true)
       .addField('Welcome Channel', welcometxt, true)

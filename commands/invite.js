@@ -1,5 +1,5 @@
 exports.run = (bot, message) => {
-  message.channel.send('Use this link to invite me to another server: https://discordapp.com/api/oauth2/authorize?client_id=390950919711227917&permissions=8&scope=bot')
+  message.channel.send('Use this link to invite me to another server: https://bit.ly/2Mjc1OX')
 }
 
 exports.conf = {

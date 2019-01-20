@@ -3,7 +3,7 @@ exports.run = async (bot, message, args, func) => {
   const db = require('quick.db')
   const lc = db.get(`logs_mute_${message.guild.id}`)
   let reason = message.content.split(/\s+/g).slice(2).join(' ')
-  if (!message.member.hasPermission('MANAGE_MESSAGES')) return func.statusMsg('x', message.channel, ':x: This requires you to have a role with the permission `Manage Messages`.', 10000)
+  if (!message.member.hasPermission('MANAGE_MESSAGES')) return func.statusMsg('x', message.channel, 'This requires you to have a role with the permission `Manage Messages`.', 10000)
   const toMute = message.mentions.members.first()
   if (!toMute) {
     func.statusMsg('x', message.channel, 'You need to mention a user to mute.')
@@ -43,6 +43,7 @@ exports.run = async (bot, message, args, func) => {
   }
   toMute.addRole(role).catch(console.error)
   func.statusMsg('white_check_mark', message.channel, `${toMute} has been muted.`)
+  db.add(`history_mutes_${toMute}`, 1)
   if (lc) {
     const embed = new Discord.RichEmbed()
       .addField('📦 | Action »', 'Mute')

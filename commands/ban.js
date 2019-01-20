@@ -19,6 +19,7 @@ exports.run = (bot, message, args, func) => {
   } else {
     bmember.ban(reason)
     func.statusMsg('boot', message.channel, `Successfully banned user ${bmember}.`)
+    db.add(`history_bans_${bmember}`, 1)
   }
   let embed = new Discord.RichEmbed()
   if (lc) {

@@ -13,7 +13,7 @@ exports.run = (bot, message, args, func) => {
     return
   }
   if (amount > 100) {
-    func.statMsg('exclamation', message.channel, 'I can only delete 100 messages at a time!')
+    func.statMsg('exclamation', message.channel, 'I can only delete a max of 100 messages at a time!')
     return
   }
   if (!amount && !user) {

@@ -1,81 +1,44 @@
 const db = require('quick.db')
 exports.run = (bot, message, args, func) => {
+  const msgtypes = [
+    'join',
+    'joindm',
+    'leave'
+  ]
+  const deltypes = [
+    'delete',
+    'remove',
+    'reset',
+    'clear',
+    'disable'
+  ]
+  if (!message.member.hasPermission('ADMINISTRATOR')) return func.statusMsg('x', message.channel, 'This requires you to have a role with the permission `Administrator`.')
+  if (!args[0]) return func.statusMsg('exclamation', message.channel, 'Correct usage: `messages <set | remove> <type>`')
   if (args[0] === 'set') {
     if (!args[1]) {
       return func.statusMsg('question', message.channel, 'You didn\'t provide a type to set!')
     }
-    if (args[1] === 'join') {
+    if (msgtypes.toString().includes(args[1])) {
       if (!args[2]) {
         return func.statusMsg('question', message.channel, 'There was no message input!')
       } else {
-        const newMsg = message.content.slice(20)
-        db.set(`messages_join_${message.guild.id}`, newMsg)
-        return func.statusMsg('white_check_mark', message.channel, 'Updated server join message!')
+        const nm = message.content.slice(15).slice(args[1].length)
+        db.set(`messages_${args[1]}_${message.guild.id}`, nm)
+        return func.statusMsg('white_check_mark', message.channel, `Updated server \`${args[1]}\` message:\n` + nm)
       }
+    } else {
+      func.statusMsg('question', message.channel, 'That wasn\'t a valid type...')
     }
-    if (args[1] === 'joindm') {
-      if (!args[2]) {
-        return func.statusMsg('question', message.channel, 'There was no message input!')
-      } else {
-        const newMsg = args.toString().replace(/,/g, ' ').slice(11)
-        db.set(`messages_joindm_${message.guild.id}`, newMsg)
-        return func.statusMsg('white_check_mark', message.channel, 'Updated server join DM message!')
-      }
-    }
-    if (args[1] === 'leave') {
-      if (!args[2]) {
-        return func.statusMsg('question', message.channel, 'There was no message input!')
-      } else {
-        const newMsg = message.content.slice(21)
-        db.set(`messages_leave_${message.guild.id}`, newMsg)
-        return func.statusMsg('white_check_mark', message.channel, 'Updated server leave message!')
-      }
-    }
-  } else if (args[0] === 'clear' || args[0] === 'remove' || args[0] === 'delete' || args[0] === 'reset') {
+  } else if (deltypes.toString().includes(args[0])) {
     if (!args[1]) {
       return func.statusMsg('question', message.channel, 'You didn\'t provide a type to remove!')
     }
-    if (args[1] === 'join') {
-      db.delete(`messages_join_${message.guild.id}`)
-      return func.statusMsg('white_check_mark', message.channel, 'Removed server join message!')
+    if (msgtypes.toString().includes(args[1])) {
+      db.delete(`messages_${args[1]}_${message.guild.id}`)
+      return func.statusMsg('white_check_mark', message.channel, `Removed server \`${args[1]}\` message!`)
     }
-    if (args[1] === 'joindm') {
-      db.delete(`messages_joindm_${message.guild.id}`)
-      return func.statusMsg('white_check_mark', message.channel, 'Removed server join DM message!')
-    }
-    if (args[1] === 'leave') {
-      db.delete(`messages_leave_${message.guild.id}`)
-      return func.statusMsg('white_check_mark', message.channel, 'Removed server leave message!')
-    }
-  } else if (args[0] === 'preview') {
-    let msg
-    if (!args[1]) {
-      func.statusMsg('question', message.channel, 'You didn\'t provide a message to preview!')
-    }
-    if (args[1] === 'join') {
-      msg = db.get(`messages_join_${message.guild.id}`)
-      if (!msg) {
-        func.statusMsg('x', message.channel, 'No message is set for that type!')
-      } else {
-        message.channel.send(msg)
-      }
-    }
-    if (args[1] === 'joindm') {
-      msg = db.get(`messages_joindm_${message.guild.id}`)
-      if (!msg) {
-        func.statusMsg('x', message.channel, 'No message is set for that type!')
-      } else {
-        message.channel.send(msg)
-      }
-    }
-    if (args[1] === 'leave') {
-      msg = db.get(`messages_leave_${message.guild.id}`)
-      if (!msg) {
-        func.statusMsg('x', message.channel, 'No message is set for that type!')
-      } else {
-        message.channel.send(msg)
-      }
-    }
+  } else {
+    func.statusMsg('question', message.channel, 'That wasn\'t a valid type...')
   }
 }
 

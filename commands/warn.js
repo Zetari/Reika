@@ -1,15 +1,15 @@
 const Discord = require('discord.js')
 exports.run = (bot, message, args, func) => {
-  const kmember = message.mentions.members.first()
+  const wmember = message.mentions.members.first()
   let reason = message.content.split(/\s+/g).slice(2).join(' ')
   const db = require('quick.db')
-  const lc = db.get(`logs_kick_${message.guild.id}`)
-  if (!message.member.hasPermission('KICK_MEMBERS')) {
-    func.statusMsg('x', message.channel, 'This requires you to have a role that can kick members.')
+  const lc = db.get(`logs_warn_${message.guild.id}`)
+  if (!message.member.hasPermission('MANAGE_MESSAGES')) {
+    func.statusMsg('x', message.channel, 'This requires you to have a role that can manage messages.')
     return
   }
   if (message.mentions.users.size === 0) {
-    return func.statusMsg('x', message.channel, 'You need to mention a user to kick.')
+    return func.statusMsg('x', message.channel, 'You need to mention a user to warn.')
   }
   if (message.mentions.users.size > 1) {
     return func.statusMsg('x', message.channel, 'You can only mention one user at a time.')
@@ -17,14 +17,13 @@ exports.run = (bot, message, args, func) => {
   if (reason.length === 0) {
     reason = 'None'
   } else {
-    kmember.kick(reason)
-    func.statusMsg('boot', message.channel, `Successfully kicked user ${kmember}.`)
-    db.add(`history_kicks_${kmember}`, 1)
+    func.statusMsg('white_check_mark', message.channel, `Added a warning to ${wmember}.`)
+    db.add(`history_warns_${wmember}`, 1)
   }
   let embed = new Discord.RichEmbed()
   if (lc) {
-    embed.addField('📦 | Action »', 'Kick')
-    embed.addField('📑 | User »', `${kmember}`)
+    embed.addField('📦 | Action »', 'Warn')
+    embed.addField('📑 | User »', `${wmember}`)
     embed.addField('💼 | Moderator »', `${message.author.toString()}`)
     embed.addField('📜 | Reason »', `${reason}`)
     embed.setColor(0x1D82B6)
@@ -40,8 +39,8 @@ exports.conf = {
 }
 
 exports.help = {
-  name: 'kick',
-  description: 'Kicks a user.',
-  usage: 'kick <user> [reason]',
+  name: 'warn',
+  description: 'Warn a user.',
+  usage: 'warn <user> [reason]',
   group: 'moderation'
 }
