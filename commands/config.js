@@ -1,83 +1,85 @@
-const db = require('quick.db');
-const Discord = require('discord.js');
+const db = require('quick.db')
+const Discord = require('discord.js')
 
-exports.run = (bot, message) => {
+exports.run = (bot, message, args, func) => {
+  let joinchannel = message.guild.channels.get(db.fetch(`logs_join_${message.guild.id}`))
+  let welcomechannel = message.guild.channels.get(db.fetch(`logs_welcome_${message.guild.id}`))
+  let leavechannel = message.guild.channels.get(db.fetch(`logs_leavelog_${message.guild.id}`))
+  let kickchannel = message.guild.channels.get(db.fetch(`logs_kick_${message.guild.id}`))
+  let banchannel = message.guild.channels.get(db.fetch(`logs_ban_${message.guild.id}`))
+  let leavechanneltxt = message.guild.channels.get(db.fetch(`logs_leave_${message.guild.id}`))
+  let dmText = db.fetch(`messages_joindm_${message.guild.id}`)
+  let joinText = db.fetch(`messages_join_${message.guild.id}`)
+  let leaveText = db.fetch(`messages_leave_${message.guild.id}`)
+  const embed = new Discord.RichEmbed()
+  let bantxt
+  let leavetxt
+  let kicktxt
+  let jointxt
+  let dmtxt
+  let joinmsgtxt
+  let leavemsgtxt
+  let welcometxt
+  let leavechtxt
 
-	let joinchannel;
-	let leavechannel;
-	let kickchannel;
-	let banchannel;
-	let dmText;
-	let joinText;
-	let leaveText;
+  if (!banchannel) bantxt = '*Not Set*'
+  else bantxt = banchannel
 
-	/* For anyone who complains about nested callback hell, screw off. <3 */
+  if (!leavechannel) leavetxt = '*Not Set*'
+  else leavetxt = leavechannel
 
-	db.fetch(`logs.ban.${message.guild.id}`).then(banID => {
-		if (!message.guild.channels.get(banID)) banchannel = '*Not Set*';
-		else banchannel = message.guild.channels.get(banID);
+  if (!welcomechannel) welcometxt = '*Not Set*'
+  else welcometxt = welcomechannel
 
-		db.fetch(`logs.leave.${message.guild.id}`).then(leaveID => {
-			if (!message.guild.channels.get(leaveID)) leavechannel = '*Not Set*';
-			else leavechannel = message.guild.channels.get(leaveID);
+  if (!leavechanneltxt) leavechtxt = '*Not Set*'
+  else leavechtxt = leavechanneltxt
 
-			db.fetch(`logs.kick.${message.guild.id}`).then(kickID => {
-				if (!message.guild.channels.get(kickID)) kickchannel = '*Not set*';
-				else kickchannel = message.guild.channels.get(kickID);
+  if (!kickchannel) kicktxt = '*Not set*'
+  else kicktxt = kickchannel
 
-				db.fetch(`logs.join.${message.guild.id}`).then(joinID => {
-					if (!message.guild.channels.get(joinID)) joinchannel = '*Not set*';
-					else joinchannel = message.guild.channels.get(joinID);
-/* eslint-disable */
-					db.fetch(`messages.joindm.${message.guild.id}`).then(joinDMFetched => {
-						if (!joinDMFetched) dmText = '*Not set*';
-						else dmText = joinDMFetched;
+  if (!joinchannel) jointxt = '*Not set*'
+  else jointxt = joinchannel
 
-						db.fetch(`messages.join.${message.guild.id}`).then(joinMessageFetched => {
-							if (!joinMessageFetched) joinText = '*Not set*';
-							else joinText = joinMessageFetched;
+  if (!dmText) dmtxt = '*Not set*'
+  else dmtxt = dmText
 
-							db.fetch(`messages.leave.${message.guild.id}`).then(leaveMessageFetched => {
-								if (!leaveMessageFetched) leaveText = '*Not set*';
-								else leaveText = leaveMessageFetched;
+  if (!joinText) joinmsgtxt = '*Not set*'
+  else joinmsgtxt = joinText
 
-								const banch = `${banchannel}`;
-								const kickch = `${kickchannel}`;
-								const joinch = `${joinchannel}`;
-								const leavech = `${leavechannel}`;
-								const welcomedm = `${dmText}`;
-								const welcometxt = `${joinText}`;
-								const leavetxt = `${leaveText}`;
-								const embed = new Discord.RichEmbed()
-									.addField('Logging Channels', '\u200B')
-									.addField('Ban Log', banch, true)
-									.addField('Kick Log', kickch, true)
-									.addField('Join Log', joinch, true)
-									.addField('Leave Log', leavech, true)
-									.addField('\u200B', '\u200B')
-									.addField('Messages', '\u200B')
-									.addField('Join DM Message', dmText, true)
-									.addField('Welcome Message', joinText, true)
-									.addField('Leave Message', leaveText, true);
-								message.channel.send({ embed });
-							});
-						});
-					});
-				});
-			});
-		});
-	});
-};
+  if (!leaveText) leavemsgtxt = '*Not set*'
+  else leavemsgtxt = leaveText
+
+  if (args[0] === 'messages') {
+    embed.setTitle('Server Config • Messages')
+      .addField('Join DM Message', dmtxt, true)
+      .addField('Welcome Message', joinmsgtxt, true)
+      .addField('Leave Message', leavemsgtxt, true)
+    message.channel.send({ embed })
+  }
+  if (args[0] === 'logs') {
+    embed.setTitle('Server Config • Logs')
+      .addField('Ban Log', bantxt, true)
+      .addField('Kick Log', kicktxt, true)
+      .addField('Join Log', jointxt, true)
+      .addField('Leave Log', leavetxt, true)
+      .addField('Welcome Channel', welcometxt, true)
+      .addField('Leave Channel', leavechtxt, true)
+    message.channel.send({ embed })
+  }
+  if (!args[0]) {
+    func.statusMsg('information_source', message.channel, 'Use `config <messages | logs>` to view the configs for the server!', '\u200B')
+  }
+}
 
 exports.conf = {
-	enabled: true,
-	guildOnly: false,
-	aliases: ['cfg'],
-};
+  enabled: true,
+  guildOnly: false,
+  aliases: ['cfg']
+}
 
 exports.help = {
-	name : 'config',
-	description: 'Shows the config.',
-	usage: 'config',
-	group: 'utility',
-};
+  name: 'config',
+  description: 'Shows the config.',
+  usage: 'config',
+  group: 'utility'
+}
