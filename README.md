@@ -1,3 +1,3 @@
 # ReikaJS
 A discord bot for things.
-Documentation found at [my site.](docs.zetari.xyz)
+Documentation found at [my site.](https://docs.zetari.xyz)
