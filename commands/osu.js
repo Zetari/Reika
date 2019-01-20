@@ -9,7 +9,7 @@ exports.run = async (bot, message, args, func) => {
   if (args[0] === 'user') {
     if (!args[1]) return func.statusMsg('question', message.channel, 'No user specified to search!')
     else {
-      const name = args.toString().slice(args[1].length).replace(/,/gi, ' ')
+      const name = args.toString().slice(args[0].length).replace(/,/gi, ' ').trim()
       const msg = await message.channel.send(':mag: Searching...')
       await osuApi.getUser({ u: name }).then(user => {
         embed.setAuthor('osu! Stats')

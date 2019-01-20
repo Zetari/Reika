@@ -12,6 +12,10 @@ exports.run = (bot, message, args, func) => {
     'clear',
     'disable'
   ]
+  let pre
+  const prefix = db.get(`prefix_${message.guild.id}`)
+  if (!prefix) pre = '-!'
+  const command = message.content.split(' ')[0].slice(pre.length)
   if (!message.member.hasPermission('ADMINISTRATOR')) return func.statusMsg('x', message.channel, 'This requires you to have a role with the permission `Administrator`.')
   if (!args[0]) return func.statusMsg('exclamation', message.channel, 'Correct usage: `messages <set | remove> <type>`')
   if (args[0] === 'set') {
@@ -22,7 +26,7 @@ exports.run = (bot, message, args, func) => {
       if (!args[2]) {
         return func.statusMsg('question', message.channel, 'There was no message input!')
       } else {
-        const nm = message.content.slice(15).slice(args[1].length)
+        const nm = message.content.slice(pre.length).slice(command.length).trim().slice(args[0].length).trim().slice(args[1].length)
         db.set(`messages_${args[1]}_${message.guild.id}`, nm)
         return func.statusMsg('white_check_mark', message.channel, `Updated server \`${args[1]}\` message:\n` + nm)
       }
