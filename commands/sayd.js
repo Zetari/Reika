@@ -1,6 +1,9 @@
 exports.run = (bot, message, args) => {
-  message.channel.send(args.join(' '))
-  message.delete(message.author)
+  if (!message.member.hasPermission('MENTION_EVERYONE')) {
+    const edited = args.join(' ').replace(/@everyone/gi, '`@everyone`').replace(/@here/gi, '`@here`')
+    message.channel.send(edited)
+    message.delete(message.author)
+  }
 }
 
 exports.conf = {
