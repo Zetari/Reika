@@ -34,10 +34,7 @@ exports.run = (bot, message, args, func) => {
         db.set(`logs_${args[1]}_${message.guild.id}`, channelment)
         return func.statusMsg('white_check_mark', message.channel, `Updated ${args[1]} log channel to <#${channelment}>!`)
       }
-    } else {
-      func.statusMsg('question', message.channel, 'That wasn\'t a valid type...')
-    }
-    if (args[1] === 'all') {
+    } else if (args[1] === 'all') {
       if (!args[2]) {
         return func.statusMsg('question', message.channel, 'There was no channel mentioned!')
       }
@@ -50,6 +47,8 @@ exports.run = (bot, message, args, func) => {
         }
         return func.statusMsg('white_check_mark', message.channel, `Updated all log channels to <#${channelment}>!`)
       }
+    } else {
+      func.statusMsg('question', message.channel, 'That wasn\'t a valid type...')
     }
     if (!args[0]) return func.statusMsg('question', message.channel, 'There was no input for the command!')
   }
