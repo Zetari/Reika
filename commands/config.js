@@ -10,6 +10,7 @@ exports.run = (bot, message, args, func) => {
   let banchannel = message.guild.channels.get(db.fetch(`logs_ban_${message.guild.id}`))
   let leavechanneltxt = message.guild.channels.get(db.fetch(`logs_leave_${message.guild.id}`))
   let warnchannel = message.guild.channels.get(db.fetch(`logs_warn_${message.guild.id}`))
+  let mutechannel = message.guild.channels.get(db.fetch(`logs_mute_${message.guild.id}`))
   let dmText = db.fetch(`messages_joindm_${message.guild.id}`)
   let joinText = db.fetch(`messages_join_${message.guild.id}`)
   let leaveText = db.fetch(`messages_leave_${message.guild.id}`)
@@ -24,6 +25,7 @@ exports.run = (bot, message, args, func) => {
   let welcometxt
   let leavechtxt
   let warntxt
+  let mutetxt
 
   if (!banchannel) bantxt = '*Not Set*'
   else bantxt = banchannel
@@ -55,6 +57,9 @@ exports.run = (bot, message, args, func) => {
   if (!warnchannel) warntxt = '*Not set*'
   else warntxt = warnchannel
 
+  if (!mutechannel) mutetxt = '*Not set*'
+  else mutetxt = mutechannel
+
   if (args[0] === 'messages') {
     embed.setTitle('Server Config • Messages')
       .addField('Join DM Message', dmtxt)
@@ -67,6 +72,7 @@ exports.run = (bot, message, args, func) => {
       .addField('Ban Log', bantxt, true)
       .addField('Kick Log', kicktxt, true)
       .addField('Warn Log', warntxt, true)
+      .addField('Mute Log', mutetxt, true)
       .addField('Join Log', jointxt, true)
       .addField('Leave Log', leavetxt, true)
       .addField('Welcome Channel', welcometxt, true)
